@@ -1,6 +1,5 @@
 package com.tias.back.service;
 
-import com.tias.back.dto.MedicationResponseDTO;
 import com.tias.back.dto.PatientRequestDTO;
 import com.tias.back.dto.PatientResponseDTO;
 import com.tias.back.entity.Patient;
@@ -26,12 +25,10 @@ public class PatientService {
     private static final Logger logger = LoggerFactory.getLogger(PatientService.class);
     private final PatientRepository patientRepo;
     private final MedicationRepository medicationRepo;
-    private final MedicationService medicationService;
 
-    public PatientService(PatientRepository patientRepo, MedicationRepository medicationRepo, MedicationService medicationService) {
+    public PatientService(PatientRepository patientRepo, MedicationRepository medicationRepo) {
         this.patientRepo = patientRepo;
         this.medicationRepo = medicationRepo;
-        this.medicationService = medicationService;
     }
 
     private void validateRequest(PatientRequestDTO dto) {
@@ -213,14 +210,10 @@ public class PatientService {
         Patient patient = patientRepo.findById(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                 "Paciente não encontrado: " + id));
-        List<MedicationResponseDTO> medicamentos = medicationRepo.findAll().stream().map(medicationService::toDto).collect(Collectors.toList());
-        for (MedicationResponseDTO medicamento : medicamentos) {
-            if(medicamento.getPatientId()==patient.getPatientId()){
-                medicationRepo.deleteById(medicamento.getId());
-            }
-        }
+        medicationRepo.findByPatient_PatientId(patient.getPatientId())
+            .forEach(medicationRepo::delete);
         patientRepo.deleteById(id);
-        logger.info("Paciente desativado: {}", id);
+        logger.info("Paciente deletado: {}", id);
         return ResponseEntity.ok("Paciente deletado com sucesso");
     }
 

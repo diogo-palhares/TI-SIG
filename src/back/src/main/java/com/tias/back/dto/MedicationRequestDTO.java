@@ -17,11 +17,10 @@ public class MedicationRequestDTO {
     @NotBlank(message = "Posologia é obrigatório")
     private String dosage;
 
-    @NotBlank(message = "Quantidade é obrigatório")
+    @NotNull(message = "Quantidade é obrigatória")
+    @Positive(message = "Quantidade deve ser maior que zero")
     private Long quantity;
 
-    @NotBlank(message = "Validade é obrigatório")
+    @NotNull(message = "Validade é obrigatória")
     private LocalDate expirationDate;
-
-    
 }

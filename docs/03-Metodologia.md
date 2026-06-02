@@ -1,7 +1,7 @@
 
 # Metodologia
 
-A metodologia adotada pelo grupo inclui gerenciamento do código-fonte utilizando Git e GitHub, com ambientes distintos para desenvolvimento, testes e produção. O Docker é utilizado para execução local da aplicação, e após homologação, a aplicação será hospedada na Hostinger.
+A metodologia adotada pelo grupo inclui o gerenciamento do código-fonte utilizando Git e GitHub, com ambientes distintos para desenvolvimento, testes e produção. A versão inicial da aplicação é executada localmente por meio do Maven Wrapper com um JDK 17 e do banco de dados H2 em memória, o que dispensa a instalação de Docker ou de um SGBD externo para fins de avaliação. Para o ambiente de produção está previsto o uso do PostgreSQL como banco de dados e a hospedagem na Hostinger após a homologação.
 
 
 ## Controle de versão

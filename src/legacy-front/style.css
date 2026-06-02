@@ -145,6 +145,38 @@
             background-color: #1e1e1e;
         }
 
+        button:disabled {
+            background-color: var(--cinza-medio);
+            cursor: not-allowed;
+        }
+
+        .login-message {
+            padding: 12px 14px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid transparent;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .login-message.error {
+            background-color: #fdecea;
+            border-color: #e6a9a2;
+            color: #a5281b;
+        }
+
+        .login-message.success {
+            background-color: #eaf6ec;
+            border-color: #a9d8b4;
+            color: #1e7a34;
+        }
+
+        .login-message.info {
+            background-color: #eef4fb;
+            border-color: #a9c5e7;
+            color: #1b4f8a;
+        }
+
 
 .footer {
     background-color: #2B2B2B;

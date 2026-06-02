@@ -1,6 +1,5 @@
 package com.tias.back.service;
 
-import com.tias.back.dto.LoginResponseDTO;
 import com.tias.back.dto.UserRequestDTO;
 import com.tias.back.dto.UserResponseDTO;
 import com.tias.back.entity.Login;
@@ -27,12 +26,10 @@ public class UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepo;
     private final LoginRepository loginRepo;
-    private final LoginService loginService;
 
-    public UserService(UserRepository userRepo, LoginRepository loginRepo, LoginService loginService) {
+    public UserService(UserRepository userRepo, LoginRepository loginRepo) {
         this.userRepo = userRepo;
         this.loginRepo = loginRepo;
-        this.loginService = loginService;
     }
 
     private void validateRequest(UserRequestDTO dto) {
@@ -165,15 +162,10 @@ public class UserService {
     public ResponseEntity<String> delete(UUID id) {
         User user = userRepo.findById(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "Usuario não encontrado: " + id));
-        List<LoginResponseDTO> logins = loginRepo.findAll().stream().map(loginService::toDto).collect(Collectors.toList());
-        for (LoginResponseDTO login : logins) {
-            if(login.getUserId()==user.getUserId()){
-                loginRepo.deleteById(login.getLoginId());
-            }
-        }
+                "Usuário não encontrado: " + id));
+        loginRepo.findByUser(user).ifPresent(loginRepo::delete);
         userRepo.deleteById(id);
-        logger.info("Usuario desativado: {}", id);
+        logger.info("Usuário deletado: {}", id);
         return ResponseEntity.ok("Usuario deletado com sucesso");
     }
 

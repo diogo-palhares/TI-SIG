@@ -31,41 +31,44 @@ cd nome-do-repositorio
 code .
 O comando code . abre o VS Code na pasta atual (funciona se você selecionou "Add to PATH" na instalação do VS Code).
 
-# Passo a Passo para Rodar a Aplicação no Windows (Sem Docker e Sem Node.js)
+# Passo a Passo para Rodar a Aplicação no Windows (sem Docker e sem banco de dados externo)
 
-## 1. Extrair o Código Fonte
-- O código fonte foi extraído corretamente, e a pasta do projeto contém os arquivos necessários.
+A versão inicial do APP é composta por um **backend** (Java + Spring Boot, executado com apenas um JDK 17 e banco **H2 em memória** — sem PostgreSQL nem Docker) e por um **frontend em React (Vite)**, que requer o **Node.js**. Os dois são iniciados separadamente, conforme os passos abaixo.
 
-## 2. Instalar o Java Development Kit (JDK)
-- Baixe e instale o JDK 17. Certifique-se de adicionar o JDK ao PATH do sistema.
-- Verifique a instalação com o comando: `java -version`.
+## 1. Instalar o JDK 17
+- Baixe e instale um JDK 17 (por exemplo, o Eclipse Temurin 17).
+- Verifique a instalação com o comando `java -version` (deve indicar a versão 17).
 
-## 3. Instalar o Maven
-- Baixe e instale o Apache Maven. Extraia o arquivo para um diretório e adicione ao PATH do sistema.
-- Verifique a instalação com o comando: `mvn -version`.
+## 2. Iniciar o Backend
+- Abra um terminal na pasta `src/back`.
+- Execute o **Maven Wrapper** (não é necessário instalar o Maven separadamente):
+  - Windows (PowerShell ou CMD): `.\mvnw.cmd spring-boot:run`
+  - Linux/macOS: `./mvnw spring-boot:run`
+- Aguarde a mensagem `Started BackApplication`. O servidor ficará disponível em `http://localhost:8080`.
+- Na primeira execução, o sistema cria automaticamente dados de exemplo (5 pacientes com seus medicamentos e um usuário de teste).
 
-## 4. Instalar o PostgreSQL
-- Baixe e instale o PostgreSQL. Durante a instalação, configure o banco de dados com as credenciais:
-  - **Database Name**: asilo
-  - **User**: postgres
-  - **Password**: root
-  - **Port**: 5432.
-- Após a instalação, inicie o PostgreSQL e teste a conexão com o comando: `psql -h localhost -U postgres -d asilo`.
+## 3. Iniciar o Frontend (React)
+- O frontend é uma aplicação **React (Vite)** e requer o **Node.js 18+** (recomendado o Node 20 LTS). Baixe em https://nodejs.org e confira com `node -version`.
+- Abra um terminal na pasta `src/front`.
+- Na primeira execução, instale as dependências: `npm install`.
+- Inicie o servidor de desenvolvimento: `npm run dev` — o navegador abrirá automaticamente em `http://localhost:5173`.
+- Mantenha o backend em execução em paralelo (passo 2).
+- Faça login com o usuário de teste:
+  - **E-mail:** `diogo@teste.com`
+  - **Senha:** `12345`
+- Após o login, você será direcionado para a listagem de pacientes, que consome a API do backend.
+- Para gerar a versão de produção do frontend: `npm run build` (saída na pasta `src/front/dist`).
 
-## 5. Configurar o Backend
-- Acesse a pasta do backend no código.
-- Configure o arquivo `application.properties` com as credenciais do banco.
-- Compile e rode o backend com os comandos:
-  ```bash
-  mvn clean install
-  mvn spring-boot:run
-  ```
-- O servidor backend estará disponível em `http://localhost:8080`.
+## 4. (Opcional) Console do Banco de Dados H2
+- Com o backend em execução, acesse `http://localhost:8080/h2-console`.
+- **JDBC URL:** `jdbc:h2:mem:gericare` — **Usuário:** `sa` — **Senha:** (deixe em branco).
 
-## 6. Configurar o Frontend
-- Navegue até a pasta `src/front` e encontre o arquivo `listagem_pacientes.html`.
-- Dê um duplo clique no arquivo HTML para abri-lo diretamente no navegador.
+## 5. (Opcional) Executar com PostgreSQL
+- Caso deseje usar PostgreSQL em vez do H2, crie o banco de dados e execute o backend com o perfil `postgres`:
+  - `.\mvnw.cmd spring-boot:run "-Dspring-boot.run.profiles=postgres"`
+- As credenciais e a URL de conexão podem ser ajustadas em `src/back/src/main/resources/application-postgres.properties`.
 
-## 7. Acessar a Página de Listagem de Pacientes
-- Após configurar o backend, o frontend será exibido diretamente no navegador.
+## 6. (Opcional) Executar os Testes Automatizados
+- Na pasta `src/back`, execute: `.\mvnw.cmd test`
+- A suíte cobre as regras de negócio das camadas de serviço e os endpoints REST (testes unitários com JUnit 5 e Mockito).
 

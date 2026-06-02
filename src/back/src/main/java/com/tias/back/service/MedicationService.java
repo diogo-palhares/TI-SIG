@@ -4,6 +4,7 @@ import com.tias.back.dto.MedicationRequestDTO;
 import com.tias.back.dto.MedicationResponseDTO;
 import com.tias.back.entity.Medication;
 import com.tias.back.entity.MedicationStatus;
+import com.tias.back.entity.Patient;
 import com.tias.back.repository.MedicationRepository;
 import com.tias.back.repository.PatientRepository;
 
@@ -48,21 +49,34 @@ public class MedicationService {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
                 "Dosage não pode ser vazio");
         }
+        if (dto.getQuantity() == null || dto.getQuantity() <= 0) {
+            logger.warn("Validação falhou em MedicationRequestDTO: Quantidade inválida");
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                "Quantidade deve ser maior que zero");
+        }
+        if (dto.getExpirationDate() == null) {
+            logger.warn("Validação falhou em MedicationRequestDTO: Validade obrigatória");
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                "Validade é obrigatória");
+        }
     }
 
     public MedicationResponseDTO create(MedicationRequestDTO dto) {
         validateRequest(dto);
+        Patient patient = patientRepo.findById(dto.getPatientId())
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "Paciente não encontrado: " + dto.getPatientId()));
         Medication m = Medication.builder()
-            .patient(patientRepo.getReferenceById(dto.getPatientId()))
+            .patient(patient)
             .description(dto.getDescription())
             .dosage(dto.getDosage())
             .quantity(dto.getQuantity())
-            .experirationDate(dto.getExpirationDate())
+            .expirationDate(dto.getExpirationDate())
             .addedAt(LocalDateTime.now())
-            .status(MedicationStatus.OK)
+            .status(MedicationStatus.fromQuantity(dto.getQuantity()))
             .build();
         Medication saved = repository.save(m);
-        logger.info("Medication criada: {}", saved.getId());
+        logger.info("Medication criada: {} (status={})", saved.getId(), saved.getStatus());
         return toDto(saved);
     }
 
@@ -87,9 +101,10 @@ public class MedicationService {
         m.setDescription(dto.getDescription());
         m.setDosage(dto.getDosage());
         m.setQuantity(dto.getQuantity());
-        m.setExperirationDate(dto.getExpirationDate());
+        m.setExpirationDate(dto.getExpirationDate());
+        m.setStatus(MedicationStatus.fromQuantity(dto.getQuantity()));
         Medication updated = repository.save(m);
-        logger.info("Medication atualizada: {}", id);
+        logger.info("Medication atualizada: {} (status={})", id, updated.getStatus());
         return toDto(updated);
     }
 
@@ -108,7 +123,7 @@ public class MedicationService {
             .description(m.getDescription())
             .dosage(m.getDosage())
             .quantity(m.getQuantity())
-            .expirationDate(m.getExperirationDate())
+            .expirationDate(m.getExpirationDate())
             .status(m.getStatus())
             .addedAt(m.getAddedAt().toString())
             .build();

@@ -177,34 +177,45 @@ CREATE TABLE DOCUMENTATIONS (
     FOREIGN KEY (medication_id) REFERENCES MEDICATIONS(id)
 );
 
+### Modelo implementado (versão inicial do APP)
+
+O modelo apresentado acima corresponde ao projeto conceitual inicial. A versão implementada da aplicação, descrita nesta entrega, contempla as quatro entidades efetivamente desenvolvidas, com as seguintes definições:
+
+- **Usuário:** identificador (UUID), nome, CPF (único), e-mail (único) e situação (ativo/inativo).
+- **Login:** identificador (UUID), e-mail, senha, situação (ativo/inativo), data e hora do último acesso e referência ao usuário correspondente (relação 1:1).
+- **Paciente:** identificador (UUID), nome, CPF (único), RG (único), data de nascimento, tipo sanguíneo, plano de saúde, número da carteirinha (único), condições/doenças crônicas, dados do contato de emergência (nome, e-mail, telefone e parentesco), situação (ativo/inativo) e data de cadastro.
+- **Medicamento:** identificador (UUID), descrição, quantidade, data de validade, posologia/dosagem, data de adição, status de estoque (OK, BAIXO ou CRÍTICO) e referência ao paciente (relação N:1).
+
+Relacionamentos implementados:
+
+- Um **Usuário** possui um **Login** associado (1:1).
+- Um **Paciente** possui muitos **Medicamentos** (1:N).
+
+As principais diferenças em relação ao modelo conceitual são: o uso de chaves primárias do tipo UUID (em vez de inteiros sequenciais); a ausência da tabela de documentos/laudos (`DOCUMENTATIONS`), cujo upload de anexos não foi implementado nesta versão inicial; e o cálculo automático do status do medicamento a partir da quantidade em estoque, atendendo ao requisito RF-008 (baixa automática de estoque).
+
 ## Tecnologias
 
-As tecnologias selecionadas para a implementação da solução são:
+As tecnologias efetivamente utilizadas na implementação da versão inicial da solução são:
 
-Front-end: HTML + CSS + JS + React
-
-Back-end: Node.js
-
-SGBD: MySQL
+- **Front-end:** React (biblioteca JavaScript) com Vite e React Router, consumindo a API REST; layout responsivo voltado a dispositivos móveis.
+- **Back-end:** Java 17 com Spring Boot 3 (módulos Spring Web e Spring Data JPA/Hibernate), expondo uma API REST.
+- **SGBD:** H2 em memória para desenvolvimento e testes (execução local sem instalações adicionais) e PostgreSQL previsto para o ambiente de produção, selecionável por perfil de execução.
+- **Gerenciamento de dependências e build:** Maven, por meio do Maven Wrapper (`mvnw`).
+- **Testes automatizados:** JUnit 5 e Mockito (testes unitários de serviço e testes de fatia de controlador com MockMvc).
 
 Relação entre as Tecnologias:
 
-A interação do usuário com o sistema será conduzida da seguinte forma:
+A interação do usuário com o sistema ocorre da seguinte forma:
 
-1.
-O usuário interage com a interface Front-end (desenvolvida em React, HTML, CSS, JS) através de um navegador web.
+1. O usuário interage com a interface Front-end (aplicação React) através de um navegador web.
 
-2.
-As requisições do Front-end são enviadas para o Back-end (desenvolvido em Node.js).
+2. As requisições do Front-end são enviadas, via HTTP/JSON, para a API REST do Back-end (desenvolvida em Java com Spring Boot).
 
-3.
-O Back-end processa as requisições, interage com o SGBD (MySQL) para persistência e recuperação de dados.
+3. O Back-end processa as requisições nas camadas de controlador e serviço, aplicando as regras de negócio e validações, e interage com o SGBD por meio do Spring Data JPA para persistência e recuperação de dados.
 
-4.
-O Back-end retorna a resposta para o Front-end.
+4. O Back-end retorna a resposta (em JSON) para o Front-end.
 
-5.
-O Front-end atualiza a interface do usuário com os dados recebidos.
+5. O Front-end atualiza a interface do usuário com os dados recebidos.
 
 
 ## Qualidade de software

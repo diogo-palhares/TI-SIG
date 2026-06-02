@@ -24,7 +24,7 @@ public class Medication {
 
     private Long quantity;
 
-    private LocalDate experirationDate;
+    private LocalDate expirationDate;
 
     private String dosage;
 
@@ -34,5 +34,6 @@ public class Medication {
     @JoinColumn(name = "patientId", referencedColumnName = "patientId", nullable = false)
     private Patient patient;
 
+    @Enumerated(EnumType.STRING)
     private MedicationStatus status;
 }

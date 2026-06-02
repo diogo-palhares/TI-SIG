@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.tias.back.entity.Login;
 import com.tias.back.entity.Medication;
+import com.tias.back.entity.MedicationStatus;
 import com.tias.back.entity.Patient;
 import com.tias.back.entity.User;
 import com.tias.back.repository.LoginRepository;
@@ -91,8 +92,9 @@ public class DataInitializer implements CommandLineRunner {
             .description(description)
             .quantity(quantity)
             .dosage(dosage)
-            .experirationDate(expirationDate)
+            .expirationDate(expirationDate)
             .addedAt(LocalDateTime.now())
+            .status(MedicationStatus.fromQuantity(quantity))
             .build();
 
         medicationRepo.save(medication);

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Casa de Repouso Do Jeitinho da Vovó</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <img src="logo.jpg" alt="Logo Vovó">
+  <h1>Casa de Repouso Do Jeitinho da Vovó</h1>
+</header>
+
+<div class="container">
+  <div class="card">
+    <div class="left">
+      <img src="logo.jpg" alt="Logo Vovó">
+      <h2>Casa de Repouso<br>Do Jeitinho da Vovó</h2>
+      <p>Cuidado, conforto e carinho para quem merece o melhor atendimento.</p>
+    </div>
+    <div class="right">
+      <h2>Bem-vindo de volta!</h2>
+      <p>Acesse o sistema para gerenciar as informações do asilo</p>
+      <form id="loginForm" novalidate>
+        <div id="loginMessage" class="login-message" role="alert" aria-live="assertive" hidden></div>
+        <div class="form-group">
+          <label for="usuario">Usuário (E-mail)</label>
+          <input type="text" id="usuario" placeholder="Digite seu e-mail" required>
+        </div>
+        <div class="form-group">
+          <label for="senha">Senha</label>
+          <input type="password" id="senha" placeholder="Digite sua senha" required>
+        </div>
+        <button type="submit">Entrar</button>
+
+<button type="button" onclick="window.location.href='cadastrarusuario.html'" style="margin-top: 10px;">
+  Cadastre-se
+</button>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-logo">
+      <img src="logo.jpg" alt="Logo Casa de Repouso">
+      <p>Casa de Repouso<br>Do Jeitinho da Vovó</p>
+    </div>
+    <div class="footer-links">
+      <div>
+        <h4>Sistema</h4>
+        <ul>
+          <li><a href="listagem_pacientes.html">Pacientes</a></li>
+          <li><a href="gerenciamento.html">Medicamentos</a></li>
+          <li><a href="#">Atividades</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Suporte</h4>
+        <ul>
+          <li><a href="#">Central de Ajuda</a></li>
+          <li><a href="#">Tutoriais</a></li>
+          <li><a href="#">Contato</a></li>
+          <li><a href="#">Reportar Problema</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Termos de Uso</a></li>
+          <li><a href="#">Política de Privacidade</a></li>
+          <li><a href="#">LGPD</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2025 Casa de Repouso Do Jeitinho da Vovó. Todos os direitos reservados.</p>
+  </div>
+</footer>
+
+<!-- Script funcional de login via backend -->
+<script>
+  const API_URL = "http://localhost:8080/api/logins/authenticate";
+
+  const form = document.getElementById('loginForm');
+  const messageBox = document.getElementById('loginMessage');
+  const emailInput = document.getElementById('usuario');
+  const senhaInput = document.getElementById('senha');
+  const submitButton = form.querySelector('button[type="submit"]');
+
+  function showMessage(text, type) {
+    messageBox.textContent = text;
+    messageBox.className = 'login-message ' + type;
+    messageBox.hidden = false;
+  }
+
+  function clearMessage() {
+    messageBox.hidden = true;
+    messageBox.textContent = '';
+  }
+
+  // Mensagem some assim que o usuário começa a corrigir os campos
+  [emailInput, senhaInput].forEach(function (campo) {
+    campo.addEventListener('input', clearMessage);
+  });
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    clearMessage();
+
+    const email = emailInput.value.trim();
+    const password = senhaInput.value.trim();
+
+    if (!email || !password) {
+      showMessage('Preencha o e-mail e a senha para entrar.', 'error');
+      return;
+    }
+
+    const labelOriginal = submitButton.textContent;
+    submitButton.disabled = true;
+    submitButton.textContent = 'Entrando...';
+
+    try {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      if (response.ok) {
+        sessionStorage.setItem('usuarioLogado', email);
+        showMessage('Login realizado com sucesso! Redirecionando...', 'success');
+        window.location.href = 'listagem_pacientes.html';
+        return;
+      }
+
+      let mensagem;
+      switch (response.status) {
+        case 401:
+          mensagem = 'Senha incorreta. Verifique sua senha e tente novamente.';
+          break;
+        case 404:
+          mensagem = 'E-mail não encontrado. Confira o endereço digitado ou faça seu cadastro.';
+          break;
+        case 403:
+          mensagem = 'Este usuário está inativo. Entre em contato com o administrador.';
+          break;
+        case 422:
+          mensagem = 'Preencha o e-mail e a senha corretamente.';
+          break;
+        default:
+          mensagem = 'Não foi possível entrar (erro ' + response.status + '). Tente novamente em instantes.';
+      }
+      showMessage(mensagem, 'error');
+    } catch (erro) {
+      showMessage('Não foi possível conectar ao servidor. Verifique se o sistema está em execução e tente novamente.', 'error');
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = labelOriginal;
+    }
+  });
+</script>
+
+</body>
+</html>

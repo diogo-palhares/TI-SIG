@@ -65,6 +65,26 @@ O uso de registros físicos, além de ineficiente, oferece riscos operacionais c
 
 Diante disso, nosso projeto busca solucionar esses desafios por meio de uma plataforma simples, acessível, portátil e segura, alinhada às reais necessidades da instituição. Além disso, essa iniciativa cumpre um importante papel social e educacional, uma vez que promove a aplicação dos conhecimentos adquiridos no curso em benefício direto da comunidade, fortalecendo o compromisso extensionista da universidade.
 
+## Fundamentação Teórica
+
+O desenvolvimento deste projeto fundamenta-se em três eixos teóricos: o envelhecimento populacional e a demanda por cuidados de longa duração; a gestão da informação em saúde e a proteção de dados sensíveis; e os princípios da Engenharia de Software aplicados à construção de sistemas de qualidade.
+
+### Envelhecimento populacional e cuidados de longa duração
+
+O Brasil vive um acelerado processo de envelhecimento populacional. Segundo as projeções do IBGE (2024), a proporção de pessoas com 60 anos ou mais passou de 8,7% em 2000 para 15,6% em 2023 e deve alcançar cerca de 37,8% da população em 2070, o equivalente a aproximadamente 75,3 milhões de idosos. Esse cenário amplia a demanda por Instituições de Longa Permanência para Idosos (ILPIs), como as casas de repouso, e reforça a necessidade de ferramentas que qualifiquem o cuidado. A Organização Mundial da Saúde (OMS, 2015) destaca que a promoção do envelhecimento saudável exige sistemas organizados em torno das necessidades das pessoas idosas, com registro adequado e contínuo de suas informações clínicas.
+
+### Gestão da informação em saúde e prontuário eletrônico
+
+A substituição de registros em papel por sistemas digitais é um movimento consolidado na área da saúde. O Prontuário Eletrônico do Paciente (PEP) centraliza informações clínicas e administrativas, reduzindo perdas, retrabalho e erros assistenciais (SBIS; CFM, 2016). No Brasil, a Sociedade Brasileira de Informática em Saúde (SBIS), em conjunto com o Conselho Federal de Medicina (CFM), define requisitos de certificação para Sistemas de Registro Eletrônico em Saúde (S-RES), organizados em Níveis de Garantia de Segurança (NGS) que estabelecem controles de autenticação, controle de acesso, auditoria e integridade das informações. Esses princípios orientaram as decisões de projeto do sistema proposto, especialmente quanto à autenticação de usuários e ao controle do estado dos registros.
+
+### Proteção de dados sensíveis
+
+As informações de saúde dos residentes são classificadas como dados pessoais sensíveis pela Lei Geral de Proteção de Dados Pessoais — LGPD (BRASIL, 2018), que impõe deveres de finalidade, segurança e confidencialidade no tratamento desses dados. Adicionalmente, o Estatuto da Pessoa Idosa (BRASIL, 2003) assegura a proteção integral e a dignidade da pessoa idosa, o que inclui o sigilo de suas informações pessoais e de saúde. Tais marcos legais fundamentam os requisitos de segurança e de controle de acesso adotados no projeto.
+
+### Engenharia de Software e qualidade
+
+A construção da solução apoia-se em práticas consagradas da Engenharia de Software. Sommerville (2018) define a disciplina como aquela que abrange todos os aspectos da produção de software, da especificação à evolução, enquanto Pressman e Maxim (2016) ressaltam a importância de processos sistemáticos para garantir qualidade e manutenibilidade. Para nortear os atributos de qualidade do produto, adotou-se como referência a norma ISO/IEC 25010 (2011), que organiza características como adequação funcional, usabilidade, confiabilidade, eficiência de desempenho e segurança — critérios detalhados na seção de Arquitetura da Solução.
+
 ## Público-alvo
 O público-alvo do sistema são os colaboradores da Casa de Repouso Jeitinho da Vovó e do Vovô, que atuam diretamente na gestão e no cuidado dos residentes. Isso inclui:
 
